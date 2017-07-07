@@ -18,6 +18,8 @@ public class PointOfInterest {
 
     private String description;
 
+    private Double cost;
+
     private String address;
 
     private String phone;
@@ -27,7 +29,11 @@ public class PointOfInterest {
 
     public PointOfInterest() {}
 
-    public PointOfInterest(String name, String description, String address, String phone, Trip trip) {
+    public PointOfInterest(String name) {
+        this.name = name;
+    }
+
+    public PointOfInterest(String name, String description, Double cost, String address, String phone, Trip trip) {
         this.name = name;
         this.description = description;
         this.address = address;
@@ -35,8 +41,8 @@ public class PointOfInterest {
         this.trip = trip;
     }
 
-    public PointOfInterest(String name) {
-        this.name = name;
+    public int getId() {
+        return id;
     }
 
     public String getName() {
@@ -53,6 +59,14 @@ public class PointOfInterest {
 
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    public Double getCost() {
+        return cost;
+    }
+
+    public void setCost(Double cost) {
+        this.cost = cost;
     }
 
     public String getAddress() {

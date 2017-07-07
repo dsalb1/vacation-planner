@@ -1,5 +1,6 @@
 package org.launchcode.vacationplanner.Models.Data;
 
+import org.launchcode.vacationplanner.Models.PointOfInterest;
 import org.launchcode.vacationplanner.Models.Trip;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
@@ -11,5 +12,5 @@ import javax.transaction.Transactional;
  */
 @Repository
 @Transactional
-public interface PointOfInterestDao extends CrudRepository<Trip, Integer> {
+public interface PointOfInterestDao extends CrudRepository<PointOfInterest, Integer> {
 }

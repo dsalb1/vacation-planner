@@ -3,7 +3,14 @@ package org.launchcode.vacationplanner.Models;
 
 
 
+
+
 import javax.persistence.*;
+
+
+import javax.validation.constraints.*;
+
+import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -19,10 +26,11 @@ public class Trip {
     @GeneratedValue
     private int id;
 
-
     private String name;
 
     private String description;
+
+    private Integer lengthNight;
 
     @OneToMany
     @JoinColumn(name = "trip_id")
@@ -38,6 +46,10 @@ public class Trip {
 
     public Trip(String name) {
         this.name = name;
+    }
+
+    public int getId() {
+        return id;
     }
 
     public String getName() {
@@ -56,13 +68,26 @@ public class Trip {
         this.description = description;
     }
 
+    public Integer getLengthNight() {
+        return lengthNight;
+    }
+
+    public void setLengthNight(Integer lengthNight) {
+        this.lengthNight = lengthNight;
+    }
+
     public List<PointOfInterest> getInterests() {
         return interests;
     }
 
-    public void addInterests(List<PointOfInterest> interests, PointOfInterest anInterest) {
+    public void setInterests(List<PointOfInterest> interests) {
+        this.interests = interests;
+    }
+
+    public void addInterests(PointOfInterest anInterest) {
         this.interests.add(anInterest);
     }
+
 }
 
 

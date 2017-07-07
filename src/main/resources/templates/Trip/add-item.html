@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org/">
+<head th:replace="fragments :: head"></head>
+
+<body class="container">
+<h1 th:text="${title}">Default Title</h1>
+
+<nav th:replace="fragments :: navigation"></nav>
+
+<table class="table">
+    <tr>
+        <th>Name</th>
+        <td th:text="${trip.name}"></td>
+    </tr>
+    <tr>
+        <th>Description</th>
+        <td th:text="${trip.description}"></td>
+    </tr>
+    <tr>
+        <th>Number of Nights</th>
+        <td th:text="${trip.lengthNight}"></td>
+    </tr>
+
+</table>
+
+
+<form method="post" style="max-width:600px;" th:object="${point}">
+    <div class="form-group">
+        <label th:for="name">Trip Name</label>
+        <input class="form-control" th:field="*{name}" />
+        <span th:errors="*{name}" class="error"></span>
+    </div>
+    <div class="form-group">
+        <label th:for="description">Trip Description</label>
+        <input class="form-control" th:field="*{description}" />
+        <span th:errors="*{description}" class="error"></span>
+    </div>
+
+    <div class="form-group">
+        <label th:for="cost">Cost</label>
+        <input class="form-control" th:field="*{cost}" />
+        <span th:errors="*{cost}" class="error"></span>
+    </div>
+
+    <div class="form-group">
+        <label th:for="address">Address</label>
+        <input class="form-control" th:field="*{address}" />
+        <span th:errors="*{address}" class="error"></span>
+    </div>
+
+    <div class="form-group">
+        <label th:for="phone">Phone Number</label>
+        <input class="form-control" th:field="*{phone}" />
+        <span th:errors="*{phone}" class="error"></span>
+    </div>
+
+    <input type="submit" value="Add Point of Interest" />
+</form>
+
+</body>
+</html>
