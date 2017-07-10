@@ -2,7 +2,8 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org/">
 <head th:fragment="head">
     <meta charset="UTF-8"/>
-    <title th:text="${title}">Vacation Planner</title>
+
+    <title th:text="${title}">My Trip Planner</title>
 
     <link th:href="@{/css/styles.css}" rel="stylesheet" />
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" />
@@ -10,11 +11,21 @@
 
 </head>
 <body>
-
-<nav th:fragment="navigation">
-    <a href="/vacation/">Home</a> |
-    <a href="/vacation/add">New Trip</a>
-</nav>
-
+<div th:fragment="navigation" class="jumbotron">
+    <h1 class="text-center">My Trip Planner</h1>
+    <nav>
+        <a href="/vacation/">Home</a> |
+        <a href="/vacation/add">New Trip</a>
+    </nav>
+</div>
+<div th:fragment="trip-info">
+<div class="row">
+    <h1 class="col-sm-4" th:text="${trip.name}"></h1>
+    <h3 class="col-sm-4"><span th:text="${trip.lengthNight}"></span><span> Nights</span></h3>
+</div>
+<div class="row">
+    <h3 class="col-sm-8" th:text="${trip.description}"></h3>
+</div>
+</div>
 </body>
 </html>

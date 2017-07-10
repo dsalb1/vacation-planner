@@ -3,26 +3,13 @@
 <head th:replace="fragments :: head"></head>
 
 <body class="container">
-<h1 th:text="${title}">Default Title</h1>
 
-<nav th:replace="fragments :: navigation"></nav>
+<div th:replace="fragments :: navigation"></div>
+<!--<h1 th:text="${title}">Default Title</h1> -->
 
-<table class="table">
-    <tr>
-        <th>Name</th>
-        <td th:text="${trip.name}"></td>
-    </tr>
-    <tr>
-        <th>Description</th>
-        <td th:text="${trip.description}"></td>
-    </tr>
-    <tr>
-        <th>Number of Nights</th>
-        <td th:text="${trip.lengthNight}"></td>
-    </tr>
-</table>
+<div th:replace="fragments :: trip-info"></div>
 
-<h2>Points of Interest</h2>
+<h2>Activities</h2>
 <table class="table">
     <tr>
         <th>Name</th>
@@ -39,7 +26,7 @@
         <td th:text="${point.phone}"></td>
     </tr>
 </table>
-
+<button><a th:href="@{/vacation/add-item/{id}(id=${trip.id})}">Add Activity</a></button>
 
 </body>
 </html>

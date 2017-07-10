@@ -3,9 +3,10 @@
 <head th:replace="fragments :: head"></head>
 
 <body class="container">
-<h1 th:text="${title}">Default Title</h1>
+
 
 <nav th:replace="fragments :: navigation"></nav>
+<h1 th:text="${title}">Default Title</h1>
 
 <p th:unless="${trips} and ${trips.size()}">No trips yet:(</p>
 <table class="table">
