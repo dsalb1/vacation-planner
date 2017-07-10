@@ -3,14 +3,7 @@ package org.launchcode.vacationplanner.Models;
 
 
 
-
-
 import javax.persistence.*;
-
-
-import javax.validation.constraints.*;
-
-import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
 

@@ -1,16 +1,19 @@
 package org.launchcode.vacationplanner.Models;
 
+import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 
 /**
  * Created by Dan on 7/5/2017.
  */
+
+@Entity
 public class User {
+
     @Id
     @GeneratedValue
     private int id;
-
 
     private String username;
 
