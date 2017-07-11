@@ -16,6 +16,7 @@
     <div class="col-sm-6">
         <label th:for="name">Activity</label>
         <input class="form-control" th:field="*{name}" />
+        <span th:text="${nameError}" class="error"></span>
         <span th:errors="*{name}" class="error"></span>
     </div>
     <div class="col-sm-6">

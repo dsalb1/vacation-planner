@@ -4,12 +4,17 @@ import org.launchcode.vacationplanner.Models.Data.PointOfInterestDao;
 import org.launchcode.vacationplanner.Models.Data.TripDao;
 import org.launchcode.vacationplanner.Models.PointOfInterest;
 import org.launchcode.vacationplanner.Models.Trip;
-import org.springframework.stereotype.Controller;
 import org.springframework.beans.factory.annotation.Autowired;
-
+import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.Errors;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+
+import javax.validation.Valid;
+
 /**
  * Created by Dan on 7/5/2017.
  */
@@ -40,7 +45,14 @@ public class TripController {
     }
 
     @RequestMapping(value="add", method=RequestMethod.POST)
-    public String processAddTripForm(Model model, @ModelAttribute Trip newTrip) {
+    public String processAddTripForm(Model model, @ModelAttribute @Valid Trip newTrip, Errors errors) {
+
+        if (errors.hasErrors()) {
+            model.addAttribute("title", "Add Trip");
+            model.addAttribute("trip", newTrip);
+
+            return "trip/add";
+        }
 
         tripDao.save(newTrip);
 
@@ -56,10 +68,16 @@ public class TripController {
     }
 
     @RequestMapping(value="edit/{id}", method=RequestMethod.POST)
-    public String processEditTripForm(Model model, @ModelAttribute Trip trip, @PathVariable int id) {
+    public String processEditTripForm(Model model, @ModelAttribute @Valid Trip trip, Errors errors, @PathVariable int id) {
 
         Trip editedTrip = tripDao.findOne(id); //find trip to be edited by its id
 
+        if (errors.hasErrors()) {
+            model.addAttribute("title", "Edit Trip");
+            model.addAttribute("trip", trip);
+
+            return "trip/edit";
+        }
         //update record in the database with new input from user
         editedTrip.setName(trip.getName());
         editedTrip.setDescription(trip.getDescription());
@@ -90,9 +108,17 @@ public class TripController {
     }
 
     @RequestMapping(value="add-item/{id}", method=RequestMethod.POST)
-    public String processPointOfInterest(Model model, @PathVariable int id, @ModelAttribute PointOfInterest myPoint) {
+    public String processPointOfInterest(Model model, @PathVariable int id, @ModelAttribute @Valid PointOfInterest myPoint, Errors errors) {
 
         Trip trip = tripDao.findOne(id); //find trip to be edited by its id
+
+        if (errors.hasErrors()) {
+            model.addAttribute("title", "Add a Point of Interest");
+            model.addAttribute("point", myPoint);
+            model.addAttribute("trip", tripDao.findOne(id));
+            model.addAttribute("nameError", "size must be between 2 and 50");
+            return "trip/add-item";
+        }
 
         //save new PointOfInterest to database and add the PointOfInterest instance to the trip
         pointOfInterestDao.save(myPoint);

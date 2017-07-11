@@ -1,9 +1,9 @@
 package org.launchcode.vacationplanner.Models;
 
 
-
-
 import javax.persistence.*;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -19,6 +19,8 @@ public class Trip {
     @GeneratedValue
     private int id;
 
+    @NotNull
+    @Size(min=2, max=50)
     private String name;
 
     private String description;

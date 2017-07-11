@@ -5,9 +5,12 @@ import org.launchcode.vacationplanner.Models.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.Errors;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+
+import javax.validation.Valid;
 
 /**
  * Created by Dan on 7/5/2017.
@@ -29,17 +32,26 @@ public class SignUpController {
     }
 
     @RequestMapping(value="signup", method = RequestMethod.POST)
-    public String processUserSignup(Model model, String verify, @ModelAttribute User newUser) {
-        if (newUser.getPassword().equals(verify)) {
-            userDao.save(newUser);
-            return "redirect:/vacation/";
+    public String processUserSignup(Model model, String verify, @ModelAttribute @Valid User newUser, Errors errors) {
+
+        if (errors.hasErrors()) {
+            model.addAttribute("title", "User Sign Up");
+            model.addAttribute("user", newUser);
+
+            return "user/signup";
         }
 
-        model.addAttribute("verify", "The passwords do not match.");
-        newUser.setPassword("");
-        model.addAttribute("user", newUser);
+        else if (newUser.getPassword().equals(verify)) {
+            userDao.save(newUser);
+            return "redirect:/vacation/";
+        } else {
 
-        return "user/signup";
+            model.addAttribute("verify", "The passwords do not match.");
+            newUser.setPassword("");
+            model.addAttribute("user", newUser);
+
+            return "user/signup";
+        }
     }
 
     @RequestMapping(value="login", method=RequestMethod.GET)

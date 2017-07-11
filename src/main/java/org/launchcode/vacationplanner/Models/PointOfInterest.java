@@ -2,6 +2,8 @@ package org.launchcode.vacationplanner.Models;
 
 import javax.persistence.Entity;
 import javax.persistence.*;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 
 /**
  * Created by Dan on 7/5/2017.
@@ -14,6 +16,8 @@ public class PointOfInterest {
     @GeneratedValue
     private int id;
 
+    @NotNull
+    @Size(min=2, max=50)
     private String name;
 
     private String description;
