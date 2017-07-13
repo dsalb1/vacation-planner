@@ -3,11 +3,11 @@ package org.launchcode.vacationplanner.Models;
 
 import org.hibernate.validator.constraints.Email;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
+import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
+import java.util.ArrayList;
+import java.util.List;
 
 
 /**
@@ -15,6 +15,13 @@ import javax.validation.constraints.Size;
  */
 
 @Entity
+/*
+@Table(
+        name="User",
+        uniqueConstraints=
+        @UniqueConstraint(columnNames={"id", "username", "email"})
+)
+*/
 public class User {
 
     @Id
@@ -23,14 +30,23 @@ public class User {
 
     @NotNull
     @Size(min=3, max=15)
+    /*
+    @Column(name="username", unique=true)
+     */
     private String username;
 
     @NotNull
-    @Size(min=3, max=15)
     private String password;
 
     @Email
+    /*
+    @Column(name="username", unique=true)
+     */
     private String email;
+
+    @OneToMany
+    @JoinColumn(name = "user_id")
+    private List<Trip> interests = new ArrayList<>();
 
     public User() {}
 
@@ -66,5 +82,13 @@ public class User {
 
     public void setEmail(String email) {
         this.email = email;
+    }
+
+    public List<Trip> getInterests() {
+        return interests;
+    }
+
+    public void setInterests(List<Trip> interests) {
+        this.interests = interests;
     }
 }

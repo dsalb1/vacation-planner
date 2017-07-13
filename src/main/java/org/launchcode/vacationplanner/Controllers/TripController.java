@@ -2,6 +2,8 @@ package org.launchcode.vacationplanner.Controllers;
 
 import org.launchcode.vacationplanner.Models.Data.PointOfInterestDao;
 import org.launchcode.vacationplanner.Models.Data.TripDao;
+import org.launchcode.vacationplanner.Models.Data.UserDao;
+import org.launchcode.vacationplanner.Models.Helpers.LogInHelper;
 import org.launchcode.vacationplanner.Models.PointOfInterest;
 import org.launchcode.vacationplanner.Models.Trip;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,6 +15,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 
 /**
@@ -27,6 +30,9 @@ public class TripController {
     private TripDao tripDao;
 
     @Autowired
+    private UserDao userDao;
+
+    @Autowired
     private PointOfInterestDao pointOfInterestDao;
 
     @RequestMapping(value="")
@@ -36,12 +42,19 @@ public class TripController {
         return "trip/index";
     }
 
+    //restricted
     @RequestMapping(value="add", method=RequestMethod.GET)
-    public String addTripForm(Model model) {
-        model.addAttribute("title", "Add Trip");
-        model.addAttribute(new Trip());
+    public String addTripForm(Model model, HttpServletRequest request) {
+        //checks to see if user is logged in
+        if (LogInHelper.isLoggedIn(request, userDao)) {
 
-        return "trip/add";
+            model.addAttribute("title", "Add Trip");
+            model.addAttribute(new Trip());
+            return "trip/add";
+            }
+
+
+        return "redirect:/vacation/user/login";
     }
 
     @RequestMapping(value="add", method=RequestMethod.POST)
@@ -59,6 +72,7 @@ public class TripController {
         return "redirect:";
     }
 
+    //restricted
     @RequestMapping(value="edit/{id}", method=RequestMethod.GET)
     public String editTripForm(Model model, @PathVariable int id) {
         model.addAttribute("title", "Edit Trip");

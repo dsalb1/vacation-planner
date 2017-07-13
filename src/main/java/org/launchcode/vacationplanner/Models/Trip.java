@@ -31,6 +31,9 @@ public class Trip {
     @JoinColumn(name = "trip_id")
     private List<PointOfInterest> interests = new ArrayList<>();
 
+    @ManyToOne
+    private User user;
+
     public Trip(){}
 
     public Trip(String name, String description) {
@@ -83,6 +86,13 @@ public class Trip {
         this.interests.add(anInterest);
     }
 
+    public User getUser() {
+        return user;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
+    }
 }
 
 
