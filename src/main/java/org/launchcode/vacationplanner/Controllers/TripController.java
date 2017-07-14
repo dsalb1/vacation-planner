@@ -37,7 +37,7 @@ public class TripController {
 
     @RequestMapping(value="")
     public String index(Model model) {
-        model.addAttribute("title", "My Trips");
+        model.addAttribute("title", "Recently Added Trips");
         model.addAttribute("trips", tripDao.findAll());
         return "trip/index";
     }

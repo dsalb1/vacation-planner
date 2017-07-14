@@ -1,7 +1,8 @@
 package org.launchcode.vacationplanner.Controllers;
 
-import org.launchcode.vacationplanner.Models.Helpers.CookieHelper;
+import org.launchcode.vacationplanner.Models.Data.TripDao;
 import org.launchcode.vacationplanner.Models.Data.UserDao;
+import org.launchcode.vacationplanner.Models.Helpers.CookieHelper;
 import org.launchcode.vacationplanner.Models.Helpers.LogInHelper;
 import org.launchcode.vacationplanner.Models.User;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,6 +28,9 @@ public class SignUpController {
     @Autowired
     private UserDao userDao;
 
+    @Autowired
+    private TripDao tripDao;
+
     @RequestMapping(value="signup", method= RequestMethod.GET)
     public String userSignUp(Model model) {
         model.addAttribute("title", "User Sign Up");
@@ -48,7 +52,6 @@ public class SignUpController {
         //user signup is successful
         else if (newUser.getPassword().equals(verify)) {
 
-            //TODO build hashing helper method for passwords
             String hex = LogInHelper.Hash(newUser.getPassword());
             newUser.setPassword(hex);
             userDao.save(newUser);
@@ -80,6 +83,9 @@ public class SignUpController {
     public String processUserLogIn(HttpServletResponse response, Model model, String username, String password) {
         User theUser = LogInHelper.findUser(userDao, username, password);
         if(theUser != null) {
+            /*
+            todo provide an all-in-one cookie setter for user sessions
+             */
             String id = Integer.toString(theUser.getId());
             CookieHelper.addCookie(response, "id", id, (60*60*24*14));
             CookieHelper.addCookie(response, "hex", theUser.getPassword(), (60*60*24*14));
@@ -88,6 +94,15 @@ public class SignUpController {
 
         model.addAttribute("username", "Username and password do not match");
         return "user/login";
+    }
+
+    @RequestMapping(value="logout")
+    public String userLogOut(HttpServletResponse response, Model model) {
+        CookieHelper.removeCookie(response, "id");
+        CookieHelper.removeCookie(response, "hex");
+        model.addAttribute("title", "Recently Added Trips");
+        model.addAttribute("trips", tripDao.findAll());
+        return "user/logout";
     }
 
 }
