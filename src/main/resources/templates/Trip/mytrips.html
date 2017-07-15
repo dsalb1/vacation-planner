@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org/">
+<head th:replace="fragments :: head"></head>
+
+<body class="container">
+
+
+<nav th:replace="fragments :: navigation"></nav>
+<h1 th:text="${title}">Default Title</h1>
+
+<p th:unless="${trips} and ${trips.size()}">No trips yet:(</p>
+<table class="table">
+    <tr>
+        <th>Name</th>
+        <th>Description</th>
+        <th>Number of Nights</th>
+    </tr>
+    <tr th:each="trip : ${trips}">
+        <td><a  th:text="${trip.name}" th:href="@{trip/{id}(id=${trip.id})}"></a></td>
+        <td th:text="${trip.description}"></td>
+        <td th:text="${trip.lengthNight}"></td>
+        <td><a th:href="@{edit/{id}(id=${trip.id})}" >Edit</a></td>
+    </tr>
+</table>
+
+</body>
+</html>

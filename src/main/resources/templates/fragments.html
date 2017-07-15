@@ -6,6 +6,10 @@
     <title th:text="${title}">My Trip Planner</title>
 
     <link th:href="@{/css/styles.css}" rel="stylesheet" />
+    <script
+            src="https://code.jquery.com/jquery-3.2.1.min.js"
+            integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4="
+            crossorigin="anonymous"></script>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" />
     <script type="text/javascript" src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
 
@@ -15,11 +19,12 @@
     <h1 class="text-center">My Trip Planner</h1>
     <nav>
         <a href="/vacation/">Home</a> |
+        <a href="/vacation/mytrips">My Trips</a> |
         <a href="/vacation/add">New Trip</a> |
         <!--
         todo collapse the two nav items into one depending on if the user is logged in or not
         -->
-        <a href="/vacation/user/signup">Sign Up</a> |
+        <a href="/vacation/user/login">Log In</a> |
         <a href="/vacation/user/logout">Log Out</a>
     </nav>
 </div>

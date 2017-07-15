@@ -81,7 +81,7 @@ public class SignUpController {
 
     @RequestMapping(value="login", method=RequestMethod.POST)
     public String processUserLogIn(HttpServletResponse response, Model model, String username, String password) {
-        User theUser = LogInHelper.findUser(userDao, username, password);
+        User theUser = LogInHelper.findUserByCredentials(userDao, username, password);
         if(theUser != null) {
             /*
             todo provide an all-in-one cookie setter for user sessions

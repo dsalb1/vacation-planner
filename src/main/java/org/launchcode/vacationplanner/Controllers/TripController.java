@@ -3,9 +3,12 @@ package org.launchcode.vacationplanner.Controllers;
 import org.launchcode.vacationplanner.Models.Data.PointOfInterestDao;
 import org.launchcode.vacationplanner.Models.Data.TripDao;
 import org.launchcode.vacationplanner.Models.Data.UserDao;
+import org.launchcode.vacationplanner.Models.Helpers.CookieHelper;
 import org.launchcode.vacationplanner.Models.Helpers.LogInHelper;
+import org.launchcode.vacationplanner.Models.Helpers.TripHelper;
 import org.launchcode.vacationplanner.Models.PointOfInterest;
 import org.launchcode.vacationplanner.Models.Trip;
+import org.launchcode.vacationplanner.Models.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -43,6 +46,20 @@ public class TripController {
     }
 
     //restricted
+    @RequestMapping(value="mytrips")
+    public String index(Model model, HttpServletRequest request) {
+        if (LogInHelper.isLoggedIn(request, userDao)) {
+            Iterable<Trip> myTrips = TripHelper.getTripsByUser(userDao, request);
+
+            model.addAttribute("title", "My Trips");
+            model.addAttribute("trips", myTrips);
+            return "trip/index";
+        }
+
+        return "redirect:/vacation/user/login";
+    }
+
+    //restricted
     @RequestMapping(value="add", method=RequestMethod.GET)
     public String addTripForm(Model model, HttpServletRequest request) {
         //checks to see if user is logged in
@@ -58,7 +75,7 @@ public class TripController {
     }
 
     @RequestMapping(value="add", method=RequestMethod.POST)
-    public String processAddTripForm(Model model, @ModelAttribute @Valid Trip newTrip, Errors errors) {
+    public String processAddTripForm(Model model, @ModelAttribute @Valid Trip newTrip, Errors errors, HttpServletRequest request) {
 
         if (errors.hasErrors()) {
             model.addAttribute("title", "Add Trip");
@@ -66,6 +83,11 @@ public class TripController {
 
             return "trip/add";
         }
+
+        //Find user by id and set User field in the new trip object;
+        Integer id = Integer.parseInt(CookieHelper.getCookieValue(request, "id"));
+        User loggedInUser = LogInHelper.findUserById(userDao, id);
+        newTrip.setUser(loggedInUser);
 
         tripDao.save(newTrip);
 

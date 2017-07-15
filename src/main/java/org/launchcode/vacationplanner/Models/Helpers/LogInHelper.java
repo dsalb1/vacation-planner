@@ -13,7 +13,7 @@ import javax.servlet.http.HttpServletRequest;
 //helper methods for authenticating and validating sessions
 public class LogInHelper extends HttpServlet {
 
-    public static User findUser(UserDao userDao, String username, String password) {
+    public static User findUserByCredentials(UserDao userDao, String username, String password) {
         Iterable<User> users = userDao.findAll();
         User theUser = new User();
 
@@ -28,6 +28,11 @@ public class LogInHelper extends HttpServlet {
         }
         theUser = null;
         return theUser;
+    }
+
+    public static User findUserById(UserDao userDao, Integer id) {
+        User loggedInUser = userDao.findOne(id);
+        return loggedInUser;
     }
 
     public static String Hash(String password) {

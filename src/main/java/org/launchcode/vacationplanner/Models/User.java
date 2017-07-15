@@ -46,7 +46,7 @@ public class User {
 
     @OneToMany
     @JoinColumn(name = "user_id")
-    private List<Trip> interests = new ArrayList<>();
+    private List<Trip> trips = new ArrayList<>();
 
     public User() {}
 
@@ -84,11 +84,11 @@ public class User {
         this.email = email;
     }
 
-    public List<Trip> getInterests() {
-        return interests;
+    public List<Trip> getTrips() {
+        return trips;
     }
 
-    public void setInterests(List<Trip> interests) {
-        this.interests = interests;
+    public void setTrips(List<Trip> interests) {
+        this.trips = trips;
     }
 }
