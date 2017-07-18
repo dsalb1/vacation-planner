@@ -12,6 +12,8 @@
             crossorigin="anonymous"></script>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" />
     <script type="text/javascript" src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="/js/jquery.cookie.js"></script>
+    <script type="text/javascript" src="/js/vacation-js.js"></script>
 
 </head>
 <body>
@@ -21,11 +23,8 @@
         <a href="/vacation/">Home</a> |
         <a href="/vacation/mytrips">My Trips</a> |
         <a href="/vacation/add">New Trip</a> |
-        <!--
-        todo collapse the two nav items into one depending on if the user is logged in or not
-        -->
-        <a href="/vacation/user/login">Log In</a> |
-        <a href="/vacation/user/logout">Log Out</a>
+        <a id="login" href="/vacation/user/login">Log In</a>
+        <a id="logout" href="/vacation/user/logout">Log Out</a>
     </nav>
 </div>
 <div th:fragment="trip-info">
