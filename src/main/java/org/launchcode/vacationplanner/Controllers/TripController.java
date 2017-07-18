@@ -4,8 +4,6 @@ import org.launchcode.vacationplanner.Models.Data.PointOfInterestDao;
 import org.launchcode.vacationplanner.Models.Data.TripDao;
 import org.launchcode.vacationplanner.Models.Data.UserDao;
 import org.launchcode.vacationplanner.Models.Helpers.CookieHelper;
-import org.launchcode.vacationplanner.Models.Helpers.LogInHelper;
-import org.launchcode.vacationplanner.Models.Helpers.TripHelper;
 import org.launchcode.vacationplanner.Models.PointOfInterest;
 import org.launchcode.vacationplanner.Models.Trip;
 import org.launchcode.vacationplanner.Models.User;
@@ -13,13 +11,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.Errors;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
+
+import static org.launchcode.vacationplanner.Models.Helpers.LogInHelper.findUserById;
+import static org.launchcode.vacationplanner.Models.Helpers.LogInHelper.isLoggedIn;
+import static org.launchcode.vacationplanner.Models.Helpers.TripHelper.getTripsByUser;
 
 /**
  * Created by Dan on 7/5/2017.
@@ -42,14 +41,15 @@ public class TripController {
     public String index(Model model) {
         model.addAttribute("title", "Recently Added Trips");
         model.addAttribute("trips", tripDao.findAll());
+        model.addAttribute("index");
         return "trip/index";
     }
 
     //restricted
     @RequestMapping(value="mytrips")
     public String index(Model model, HttpServletRequest request) {
-        if (LogInHelper.isLoggedIn(request, userDao)) {
-            Iterable<Trip> myTrips = TripHelper.getTripsByUser(userDao, request);
+        if (isLoggedIn(request, userDao)) {
+            Iterable<Trip> myTrips = getTripsByUser(userDao, request);
 
             model.addAttribute("title", "My Trips");
             model.addAttribute("trips", myTrips);
@@ -63,7 +63,7 @@ public class TripController {
     @RequestMapping(value="add", method=RequestMethod.GET)
     public String addTripForm(Model model, HttpServletRequest request) {
         //checks to see if user is logged in
-        if (LogInHelper.isLoggedIn(request, userDao)) {
+        if (isLoggedIn(request, userDao)) {
 
             model.addAttribute("title", "Add Trip");
             model.addAttribute(new Trip());
@@ -86,7 +86,7 @@ public class TripController {
 
         //Find user by id and set User field in the new trip object;
         Integer id = Integer.parseInt(CookieHelper.getCookieValue(request, "id"));
-        User loggedInUser = LogInHelper.findUserById(userDao, id);
+        User loggedInUser = findUserById(userDao, id);
         newTrip.setUser(loggedInUser);
 
         tripDao.save(newTrip);
@@ -96,11 +96,14 @@ public class TripController {
 
     //restricted
     @RequestMapping(value="edit/{id}", method=RequestMethod.GET)
-    public String editTripForm(Model model, @PathVariable int id) {
-        model.addAttribute("title", "Edit Trip");
-        model.addAttribute(tripDao.findOne(id));
+    public String editTripForm(Model model, @PathVariable int id, HttpServletRequest request) {
+        if (isLoggedIn(request, userDao)) {
+            model.addAttribute("title", "Edit Trip");
+            model.addAttribute(tripDao.findOne(id));
 
-        return "trip/edit";
+            return "trip/edit";
+        }
+        return "redirect:/vacation/user/login";
     }
 
     @RequestMapping(value="edit/{id}", method=RequestMethod.POST)
@@ -133,14 +136,17 @@ public class TripController {
         return "trip/view";
     }
 
+    //restricted
     @RequestMapping(value="add-item/{id}", method=RequestMethod.GET)
-    public String addPointOfInterest(Model model, @PathVariable int id) {
+    public String addPointOfInterest(Model model, @PathVariable int id, HttpServletRequest request) {
+        if (isLoggedIn(request, userDao)) {
+            model.addAttribute("title", "Add an Activity");
+            model.addAttribute("point", new PointOfInterest());
+            model.addAttribute("trip", tripDao.findOne(id));
 
-        model.addAttribute("title", "Add a Point of Interest");
-        model.addAttribute("point", new PointOfInterest());
-        model.addAttribute("trip", tripDao.findOne(id));
-
-        return "trip/add-item";
+            return "trip/add-item";
+        }
+        return "redirect:/vacation/user/login";
     }
 
     @RequestMapping(value="add-item/{id}", method=RequestMethod.POST)
@@ -149,7 +155,7 @@ public class TripController {
         Trip trip = tripDao.findOne(id); //find trip to be edited by its id
 
         if (errors.hasErrors()) {
-            model.addAttribute("title", "Add a Point of Interest");
+            model.addAttribute("title", "Add an Activity");
             model.addAttribute("point", myPoint);
             model.addAttribute("trip", tripDao.findOne(id));
             model.addAttribute("nameError", "size must be between 2 and 50");
@@ -165,4 +171,23 @@ public class TripController {
         return "redirect:/vacation/";
     }
 
+    @RequestMapping(value="remove-item/{id}", method=RequestMethod.GET)
+    public String removePointOfInterest(Model model, HttpServletRequest request, @PathVariable int id) {
+        if (isLoggedIn(request, userDao)) {
+            model.addAttribute("title", "Remove activities");
+            model.addAttribute("trip", tripDao.findOne(id));
+
+            return "/trip/remove-item";
+        }
+        return "redirect: /vacation/user/login";
+    }
+
+    @RequestMapping(value="remove-item/{id}", method=RequestMethod.POST)
+    public String processRemovePointOfInterest(Model model, @RequestParam int[] pointIds) {
+            for(int pointId : pointIds) {
+                pointOfInterestDao.delete(pointId);
+            }
+
+            return "redirect:/vacation/";
+        }
 }
