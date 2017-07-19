@@ -1,10 +1,15 @@
 package org.launchcode.vacationplanner.Models.Helpers;
 
 import org.launchcode.vacationplanner.Models.Data.UserDao;
+import org.launchcode.vacationplanner.Models.Trip;
 import org.launchcode.vacationplanner.Models.User;
 
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
+
+import static org.apache.commons.codec.digest.DigestUtils.sha256Hex;
+import static org.launchcode.vacationplanner.Models.Helpers.CookieHelper.getCookieValue;
+import static org.launchcode.vacationplanner.Models.Helpers.TripHelper.getTripsByUser;
 
 /**
  * Created by Dan on 7/13/2017.
@@ -35,14 +40,15 @@ public class LogInHelper extends HttpServlet {
         return loggedInUser;
     }
 
-    public static String Hash(String password) {
-        String sha256hex = org.apache.commons.codec.digest.DigestUtils.sha256Hex(password);
+    public static String Hash(String text) {
+        String sha256hex = sha256Hex(text);
         return sha256hex;
     }
 
+    //checks session cookies to see if a user is logged in
     public static Boolean isLoggedIn(HttpServletRequest request, UserDao userDao) {
-        String idString = CookieHelper.getCookieValue(request, "id");
-        String hex = CookieHelper.getCookieValue(request, "hex");
+        String idString = getCookieValue(request, "id");
+        String hex = getCookieValue(request, "hex");
 
         if (idString != null) {
             Integer id = Integer.parseInt(idString);
@@ -53,6 +59,21 @@ public class LogInHelper extends HttpServlet {
         }
         return false;
     }
+
+    //after determining a user is logged in, checks the user's trips against a specific trip id to determine if user has permissions to edit that trip (i.e., that user OWNS that trip)
+    public static Boolean hasPermission(HttpServletRequest request, UserDao userDao, int id) {
+        if (isLoggedIn(request, userDao)) {
+            Iterable<Trip> trips = getTripsByUser(userDao, request);
+            for (Trip trip : trips) {
+                if (trip.getId() == id) {
+                    return true;
+                }
+            }
+
+        }
+        return false;
+    }
+
 }
 
 

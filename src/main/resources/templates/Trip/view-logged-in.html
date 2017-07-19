@@ -8,8 +8,10 @@
 <!--<h1 th:text="${title}">Default Title</h1> -->
 
 <div th:replace="fragments :: trip-info"></div>
-
+<h3><a th:href="@{/vacation/edit/{id}(id=${trip.id})}" >Edit</a></h3>
 <div th:replace="fragments :: activities"></div>
+<button><a th:href="@{/vacation/add-item/{id}(id=${trip.id})}">Add Activity</a></button>
+<button><a th:href="@{/vacation/remove-item/{id}(id=${trip.id})}">Remove Activity</a></button>
 
 </body>
 </html>

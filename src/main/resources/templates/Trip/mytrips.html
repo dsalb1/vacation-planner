@@ -13,11 +13,14 @@
     <tr>
         <th>Name</th>
         <th>Description</th>
+        <th>Budget</th>
         <th>Number of Nights</th>
+        <th></th>
     </tr>
     <tr th:each="trip : ${trips}">
         <td><a  th:text="${trip.name}" th:href="@{trip/{id}(id=${trip.id})}"></a></td>
         <td th:text="${trip.description}"></td>
+        <td th:text="${trip.getBudget()}"></td>
         <td th:text="${trip.lengthNight}"></td>
         <td><a th:href="@{edit/{id}(id=${trip.id})}" >Edit</a></td>
     </tr>
