@@ -16,4 +16,6 @@ public class TripHelper {
         User loggedInUser = userDao.findOne(id);
         return loggedInUser.getTrips();
     }
+
+
 }

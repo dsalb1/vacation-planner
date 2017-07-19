@@ -27,14 +27,43 @@
         <a id="logout" href="/vacation/user/logout">Log Out</a>
     </nav>
 </div>
+
+<!-- trip-info  -->
 <div th:fragment="trip-info">
-<div class="row">
-    <h1 class="col-sm-4" th:text="${trip.name}"></h1>
-    <h3 class="col-sm-4"><span th:text="${trip.lengthNight}"></span><span> Nights</span></h3>
+    <div class="row">
+        <h1 class="col-sm-4" th:text="${trip.name}"></h1>
+        <h3 class="col-sm-4"><span th:text="${trip.lengthNight}"></span><span> Nights</span></h3>
+    </div>
+    <div class="row">
+        <h3 class="col-sm-4" th:text="${trip.description}"></h3>
+        <h3 class="col-sm-4" th:text="${trip.getBudget()}"></h3>
+    </div>
 </div>
-<div class="row">
-    <h3 class="col-sm-8" th:text="${trip.description}"></h3>
+
+<!-- activities -->
+<div th:fragment="activities">
+    <h2>Activities</h2>
+    <table class="table">
+        <tr>
+            <th>Name</th>
+            <th>Description</th>
+            <th>Cost</th>
+            <th>Address</th>
+            <th>Phone Number</th>
+        </tr>
+        <tr th:each="point : ${trip.interests}">
+            <td th:text="${point.name}"></td>
+            <td th:text="${point.description}"></td>
+            <td th:text="${point.cost}"></td>
+            <td th:text="${point.address}"></td>
+            <td th:text="${point.phone}"></td>
+        </tr>
+    </table>
 </div>
-</div>
+
+
+
+
+
 </body>
 </html>

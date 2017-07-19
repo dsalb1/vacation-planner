@@ -27,8 +27,6 @@ public class Trip {
 
     private Integer lengthNight;
 
-    private Integer budget;
-
     @OneToMany
     @JoinColumn(name = "trip_id")
     private List<PointOfInterest> interests = new ArrayList<>();

@@ -17,6 +17,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 
 import static org.launchcode.vacationplanner.Models.Helpers.LogInHelper.findUserById;
+import static org.launchcode.vacationplanner.Models.Helpers.LogInHelper.hasPermission;
 import static org.launchcode.vacationplanner.Models.Helpers.LogInHelper.isLoggedIn;
 import static org.launchcode.vacationplanner.Models.Helpers.TripHelper.getTripsByUser;
 
@@ -53,7 +54,7 @@ public class TripController {
 
             model.addAttribute("title", "My Trips");
             model.addAttribute("trips", myTrips);
-            return "trip/index";
+            return "trip/mytrips";
         }
 
         return "redirect:/vacation/user/login";
@@ -97,13 +98,13 @@ public class TripController {
     //restricted
     @RequestMapping(value="edit/{id}", method=RequestMethod.GET)
     public String editTripForm(Model model, @PathVariable int id, HttpServletRequest request) {
-        if (isLoggedIn(request, userDao)) {
+        if (hasPermission(request, userDao, id)) {
             model.addAttribute("title", "Edit Trip");
             model.addAttribute(tripDao.findOne(id));
 
             return "trip/edit";
         }
-        return "redirect:/vacation/user/login";
+        return "redirect:/vacation/user/no-permission";
     }
 
     @RequestMapping(value="edit/{id}", method=RequestMethod.POST)
@@ -127,10 +128,17 @@ public class TripController {
         return "redirect:/vacation/";
     }
 
+    //check for restriction
     @RequestMapping(value="trip/{id}")
-    public String tripDisplayer(Model model, @PathVariable int id) {
+    public String tripView(Model model, HttpServletRequest request, @PathVariable int id) {
 
         model.addAttribute("trip", tripDao.findOne(id));
+
+        if (hasPermission(request, userDao, id)) {
+
+            return "trip/view-logged-in";
+        }
+
         model.addAttribute("title", "Your Trip");
 
         return "trip/view";
@@ -139,14 +147,14 @@ public class TripController {
     //restricted
     @RequestMapping(value="add-item/{id}", method=RequestMethod.GET)
     public String addPointOfInterest(Model model, @PathVariable int id, HttpServletRequest request) {
-        if (isLoggedIn(request, userDao)) {
+        if (hasPermission(request, userDao, id)) {
             model.addAttribute("title", "Add an Activity");
             model.addAttribute("point", new PointOfInterest());
             model.addAttribute("trip", tripDao.findOne(id));
 
             return "trip/add-item";
         }
-        return "redirect:/vacation/user/login";
+        return "redirect:/vacation/user/no-permission";
     }
 
     @RequestMapping(value="add-item/{id}", method=RequestMethod.POST)
@@ -173,13 +181,13 @@ public class TripController {
 
     @RequestMapping(value="remove-item/{id}", method=RequestMethod.GET)
     public String removePointOfInterest(Model model, HttpServletRequest request, @PathVariable int id) {
-        if (isLoggedIn(request, userDao)) {
+        if (hasPermission(request, userDao, id)) {
             model.addAttribute("title", "Remove activities");
             model.addAttribute("trip", tripDao.findOne(id));
 
             return "/trip/remove-item";
         }
-        return "redirect: /vacation/user/login";
+        return "redirect: /vacation/user/no-permission";
     }
 
     @RequestMapping(value="remove-item/{id}", method=RequestMethod.POST)
