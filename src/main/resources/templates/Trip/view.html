@@ -9,7 +9,12 @@
 
 <div th:replace="fragments :: trip-info"></div>
 
-<div th:replace="fragments :: activities"></div>
+<div th:unless="${trip.interests.size()}">
+    <p>The user has not yet added any activities for this trip.</p>
+</div>
+<div th:if="${trip.interests.size()}">
+    <div th:replace="fragments :: activities"></div>
+</div>
 
 </body>
 </html>

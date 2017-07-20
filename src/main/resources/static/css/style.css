@@ -1,0 +1,44 @@
+body.container {
+    Font-Family: 'Catamaran', Sans-Serif;
+    Font-Size: 16px;
+}
+
+
+#navigation {
+    background-color:#1f2428;
+    padding-top:5px;
+    margin-bottom:0px;
+    border:none;
+}
+
+
+#logo {
+    Font-Family: 'Lato', Sans-Serif;
+    color:#54636f;
+    Font-Size: 30px;
+    font-style:italic;
+    display:inline;
+    padding-right:30px;
+}
+
+.nav-links {
+    float:right;
+    padding-right:20px;
+}
+
+.btn {
+    margin-left:10px;
+}
+
+nav a:hover {
+  text-decoration:none;
+}
+
+nav .btn:hover {
+  background-color:white;
+  border-color:black;
+}
+
+.error {
+color:red;
+}
