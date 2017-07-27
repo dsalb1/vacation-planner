@@ -15,10 +15,10 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
+import java.util.ArrayList;
+import java.util.List;
 
-import static org.launchcode.vacationplanner.Models.Helpers.LogInHelper.findUserById;
-import static org.launchcode.vacationplanner.Models.Helpers.LogInHelper.hasPermission;
-import static org.launchcode.vacationplanner.Models.Helpers.LogInHelper.isLoggedIn;
+import static org.launchcode.vacationplanner.Models.Helpers.LogInHelper.*;
 import static org.launchcode.vacationplanner.Models.Helpers.TripHelper.getTripsByUser;
 
 /**
@@ -92,7 +92,7 @@ public class TripController {
 
         tripDao.save(newTrip);
 
-        return "redirect:";
+        return "redirect:mytrips";
     }
 
     //restricted
@@ -125,7 +125,7 @@ public class TripController {
 
         tripDao.save(editedTrip);
 
-        return "redirect:/vacation/";
+        return "redirect:/vacation/mytrips";
     }
 
     //check for restriction
@@ -176,7 +176,7 @@ public class TripController {
 
         tripDao.save(trip);
 
-        return "redirect:/vacation/";
+        return "redirect:/vacation/trip/{id}";
     }
 
     @RequestMapping(value="remove-item/{id}", method=RequestMethod.GET)
@@ -185,7 +185,7 @@ public class TripController {
             model.addAttribute("title", "Remove activities");
             model.addAttribute("trip", tripDao.findOne(id));
 
-            return "/trip/remove-item";
+            return "/trip/remove-index";
         }
         return "redirect: /vacation/user/no-permission";
     }
@@ -198,4 +198,29 @@ public class TripController {
 
             return "redirect:/vacation/";
         }
+
+    @RequestMapping(value="mytrips/compare", method=RequestMethod.GET)
+    public String compareTrips(Model model, HttpServletRequest request) {
+        if (isLoggedIn(request, userDao)) {
+            Iterable<Trip> myTrips = getTripsByUser(userDao, request);
+
+            model.addAttribute("title", "Select Two Trips To Compare");
+            model.addAttribute("trips", myTrips);
+            return "trip/compare-index";
+        }
+
+        return "redirect:/vacation/user/login";
+    }
+
+    @RequestMapping(value="mytrips/compare", method=RequestMethod.POST)
+    public String processCompareTrips(Model model, @RequestParam int[] tripIds) {
+        List<Trip> tripsToCompare = new ArrayList<>();
+        for (int id : tripIds) {
+            tripsToCompare.add(tripDao.findOne(id));
+        }
+        model.addAttribute("title", "Comparing Trips");
+        model.addAttribute("trips", tripsToCompare);
+        return "trip/view-compare";
+    }
+
 }

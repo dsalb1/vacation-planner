@@ -11,7 +11,6 @@ body.container {
     border:none;
 }
 
-
 #logo {
     Font-Family: 'Lato', Sans-Serif;
     color:#54636f;
@@ -37,6 +36,11 @@ nav a:hover {
 nav .btn:hover {
   background-color:white;
   border-color:black;
+}
+
+.compare-view {
+    border-right:1px solid grey;
+    height:100%;
 }
 
 .error {

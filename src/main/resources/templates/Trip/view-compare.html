@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org/">
+<head th:replace="fragments :: head"></head>
+
+<body class="container">
+
+<div th:replace="fragments :: navigation"></div>
+<div th:each="trip : ${trips}">
+    <div class="col-sm-6 compare-view">
+        <div th:replace="fragments :: trip-info"></div>
+        <div th:if="${trip.interests.size()}">
+            <div th:replace="fragments :: activities"></div>
+        </div>
+    </div>
+</div>
+
+
+
+
+</body>
+</html>

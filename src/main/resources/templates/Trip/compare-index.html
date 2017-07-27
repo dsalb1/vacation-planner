@@ -6,15 +6,11 @@
 
 
 <nav th:replace="fragments :: navigation"></nav>
-<div class="row">
-    <h1 class="col-sm-8" th:text="${title}">Default Title</h1>
-    <h1 class="col-sm-4 text-right"><a th:href="@{mytrips/compare}">Compare Trips</a></h1>
-</div>
-
-
-<p th:unless="${trips} and ${trips.size()}">No trips yet:(</p>
+<h1 th:text="${title}">Default Title</h1>
+<form method="post">
 <table class="table">
     <tr>
+        <th></th>
         <th>Name</th>
         <th>Description</th>
         <th>Budget</th>
@@ -22,13 +18,18 @@
         <th></th>
     </tr>
     <tr th:each="trip : ${trips}">
+        <td>
+            <input class="compare-checkbox" type="checkbox" name="tripIds" th:value="${trip.id}" th:id="${trip.id}" />
+            <label th:for="${trip.id}"></label>
+        </td>
         <td><a  th:text="${trip.name}" th:href="@{trip/{id}(id=${trip.id})}"></a></td>
         <td th:text="${trip.description}"></td>
         <td th:text="${trip.getBudget()}"></td>
         <td th:text="${trip.lengthNight}"></td>
-        <td><a th:href="@{edit/{id}(id=${trip.id})}" >Edit</a></td>
     </tr>
 </table>
-
+<input type="submit" value="Compare Trips (limit two)" />
+</form>
+<script type="text/javascript" src="/js/checkbox-limit.js"></script>
 </body>
 </html>
