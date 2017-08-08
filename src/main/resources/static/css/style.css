@@ -43,6 +43,20 @@ nav .btn:hover {
     height:100%;
 }
 
+#trip-info {
+    height:100%;
+}
+
+td a:hover {
+    text-decoration:none;
+    color:purple;
+}
+
+button a:hover {
+    text-decoration:none;
+    color:purple;
+}
+
 .error {
 color:red;
 }

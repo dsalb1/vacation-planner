@@ -61,7 +61,7 @@ public class TripController {
     }
 
     //restricted
-    @RequestMapping(value="add", method=RequestMethod.GET)
+    @RequestMapping(value="mytrips/add", method=RequestMethod.GET)
     public String addTripForm(Model model, HttpServletRequest request) {
         //checks to see if user is logged in
         if (isLoggedIn(request, userDao)) {
@@ -75,7 +75,7 @@ public class TripController {
         return "redirect:/vacation/user/login";
     }
 
-    @RequestMapping(value="add", method=RequestMethod.POST)
+    @RequestMapping(value="mytrips/add", method=RequestMethod.POST)
     public String processAddTripForm(Model model, @ModelAttribute @Valid Trip newTrip, Errors errors, HttpServletRequest request) {
 
         if (errors.hasErrors()) {
@@ -92,7 +92,7 @@ public class TripController {
 
         tripDao.save(newTrip);
 
-        return "redirect:mytrips";
+        return "redirect:";
     }
 
     //restricted
@@ -185,7 +185,7 @@ public class TripController {
             model.addAttribute("title", "Remove activities");
             model.addAttribute("trip", tripDao.findOne(id));
 
-            return "/trip/remove-index";
+            return "/trip/remove-activity";
         }
         return "redirect: /vacation/user/no-permission";
     }
@@ -198,6 +198,28 @@ public class TripController {
 
             return "redirect:/vacation/";
         }
+
+    @RequestMapping(value="mytrips/remove", method=RequestMethod.GET)
+    public String removeTrip(Model model, HttpServletRequest request) {
+        if (isLoggedIn(request, userDao)) {
+            Iterable<Trip> myTrips = getTripsByUser(userDao, request);
+
+            model.addAttribute("title", "Remove Trips");
+            model.addAttribute("trips", myTrips);
+            return "trip/remove-trip";
+        }
+
+        return "redirect:/vacation/user/login";
+    }
+
+    @RequestMapping(value="mytrips/remove", method=RequestMethod.POST)
+    public String processRemoveTrip(Model model, @RequestParam int[] tripIds) {
+        for(int tripId : tripIds) {
+            tripDao.delete(tripId);
+        }
+
+        return "redirect:";
+    }
 
     @RequestMapping(value="mytrips/compare", method=RequestMethod.GET)
     public String compareTrips(Model model, HttpServletRequest request) {

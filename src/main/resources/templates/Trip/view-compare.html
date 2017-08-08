@@ -7,9 +7,9 @@
 <div th:replace="fragments :: navigation"></div>
 <div th:each="trip : ${trips}">
     <div class="col-sm-6 compare-view">
-        <div th:replace="fragments :: trip-info"></div>
+        <div class="compare-main" th:replace="fragments :: trip-info"></div>
         <div th:if="${trip.interests.size()}">
-            <div th:replace="fragments :: activities"></div>
+            <div class="compare-interests" th:replace="fragments :: activities"></div>
         </div>
     </div>
 </div>
