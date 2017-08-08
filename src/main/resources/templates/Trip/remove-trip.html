@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org/">
+<head th:replace="fragments :: head"></head>
+
+<body class="container">
+
+
+<nav th:replace="fragments :: navigation"></nav>
+<h1 th:text="${title}">Default Title</h1>
+<form method="post">
+    <table class="table">
+        <tr>
+            <th>Remove</th>
+            <th>Name</th>
+            <th>Description</th>
+            <th>Budget</th>
+            <th>Number of Nights</th>
+            <th></th>
+        </tr>
+        <tr th:each="trip : ${trips}">
+            <td>
+                <input type="checkbox" name="tripIds" th:value="${trip.id}" th:id="${trip.id}"/>
+                <label th:for="${trip.id}"></label>
+            </td>
+            <td><a  th:text="${trip.name}" th:href="@{trip/{id}(id=${trip.id})}"></a></td>
+            <td th:text="${trip.description}"></td>
+            <td th:text="${trip.getBudget()}"></td>
+            <td th:text="${trip.lengthNight}"></td>
+
+        </tr>
+    </table>
+    <input type="submit" value="Remove Trip" />
+</form>
+
+</body>
+</html>

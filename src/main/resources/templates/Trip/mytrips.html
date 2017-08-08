@@ -8,27 +8,14 @@
 <nav th:replace="fragments :: navigation"></nav>
 <div class="row">
     <h1 class="col-sm-8" th:text="${title}">Default Title</h1>
-    <h1 class="col-sm-4 text-right"><a th:href="@{mytrips/compare}">Compare Trips</a></h1>
 </div>
 
+<div th:replace="fragments :: trips-loggedIn"></div>
 
-<p th:unless="${trips} and ${trips.size()}">No trips yet:(</p>
-<table class="table">
-    <tr>
-        <th>Name</th>
-        <th>Description</th>
-        <th>Budget</th>
-        <th>Number of Nights</th>
-        <th></th>
-    </tr>
-    <tr th:each="trip : ${trips}">
-        <td><a  th:text="${trip.name}" th:href="@{trip/{id}(id=${trip.id})}"></a></td>
-        <td th:text="${trip.description}"></td>
-        <td th:text="${trip.getBudget()}"></td>
-        <td th:text="${trip.lengthNight}"></td>
-        <td><a th:href="@{edit/{id}(id=${trip.id})}" >Edit</a></td>
-    </tr>
-</table>
+
+<button><a th:href="@{mytrips/add}">Add Trip</a></button>
+<button th:if="${trips.size()}"><a th:href="@{mytrips/remove}">Remove Trip(s)</a></button>
+<button th:if="${trips.size() > 1}"><a th:href="@{mytrips/compare}">Compare Trips</a></button>
 
 </body>
 </html>
