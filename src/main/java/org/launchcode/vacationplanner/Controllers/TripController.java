@@ -38,6 +38,7 @@ public class TripController {
     @Autowired
     private PointOfInterestDao pointOfInterestDao;
 
+    /*
     @RequestMapping(value="")
     public String index(Model model) {
         model.addAttribute("title", "Recently Added Trips");
@@ -45,6 +46,15 @@ public class TripController {
         model.addAttribute("index");
         return "trip/index";
     }
+    */
+
+    @RequestMapping(value="")
+    public String index(Model model) {
+        model.addAttribute("title", "Ready To Plan Your Next Adventure?");
+
+        return "trip/index-jumbo";
+    }
+
 
     //restricted
     @RequestMapping(value="mytrips")

@@ -1,8 +1,8 @@
+
 body.container {
     Font-Family: 'Catamaran', Sans-Serif;
     Font-Size: 16px;
 }
-
 
 #navigation {
     background-color:#1f2428;
@@ -19,6 +19,37 @@ body.container {
     display:inline;
     padding-right:30px;
 }
+
+#paris {
+    display:flex;
+    height:350px;
+    width:100%;
+    margin-top:0px;
+    background: url("../images/paris2.jpg") no-repeat center;
+}
+
+#paris h1 {
+    color:white;
+    padding-top:5rem;
+    width:100%;
+    text-align:center;
+}
+
+#schrecksee {
+    display:flex;
+    height:340px;
+    width:100%;
+    background: url("../images/schrecksee.jpg") center center no-repeat;;
+}
+
+#copy-container {
+    padding-top:4rem;
+    background-color: #54636f;
+    color:white;
+    height:300px;
+    width:100%;
+}
+
 
 .nav-links {
     float:right;
