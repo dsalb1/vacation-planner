@@ -20,7 +20,7 @@ public class LogInHelper extends HttpServlet {
 
     public static User findUserByCredentials(UserDao userDao, String username, String password) {
         Iterable<User> users = userDao.findAll();
-        User theUser = new User();
+        User theUser;
 
 
         String hex = LogInHelper.Hash(password);
@@ -33,6 +33,12 @@ public class LogInHelper extends HttpServlet {
         }
         theUser = null;
         return theUser;
+    }
+
+    public static User getLoggedInUser(UserDao userDao, HttpServletRequest request) {
+        Integer id = Integer.parseInt(CookieHelper.getCookieValue(request, "id"));
+        User loggedInUser = userDao.findOne(id);
+        return loggedInUser;
     }
 
     public static User findUserById(UserDao userDao, Integer id) {
@@ -60,7 +66,10 @@ public class LogInHelper extends HttpServlet {
         return false;
     }
 
-    //after determining a user is logged in, checks the user's trips against a specific trip id to determine if user has permissions to edit that trip (i.e., that user OWNS that trip)
+    /*
+    after determining a user is logged in, checks the user's trips against a specific trip id to determine
+    if user has permissions to edit that trip (i.e., that user OWNS that trip)
+    */
     public static Boolean hasPermission(HttpServletRequest request, UserDao userDao, int id) {
         if (isLoggedIn(request, userDao)) {
             Iterable<Trip> trips = getTripsByUser(userDao, request);
@@ -76,6 +85,9 @@ public class LogInHelper extends HttpServlet {
 
 }
 
+    /*
+
+     */
 
 
 

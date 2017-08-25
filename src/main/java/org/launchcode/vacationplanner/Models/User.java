@@ -26,23 +26,24 @@ public class User {
 
     @Id
     @GeneratedValue
+    @Column(name="ID")
     private int id;
 
     @NotNull
     @Size(min=3, max=15)
-    /*
-    @Column(name="username", unique=true)
-     */
+    @Column(name="USERNAME")
     private String username;
 
     @NotNull
+    @Column(name="PASSWORD")
     private String password;
 
     @Email
-    /*
-    @Column(name="username", unique=true)
-     */
+    @Column(name="EMAIL")
     private String email;
+
+    @Column(name="LOCATION")
+    private String location;
 
     @OneToMany
     @JoinColumn(name = "user_id")
@@ -82,6 +83,14 @@ public class User {
 
     public void setEmail(String email) {
         this.email = email;
+    }
+
+    public String getLocation() {
+        return location;
+    }
+
+    public void setLocation(String location) {
+        this.location = location;
     }
 
     public List<Trip> getTrips() {

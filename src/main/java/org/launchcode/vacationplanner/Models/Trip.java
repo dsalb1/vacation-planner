@@ -27,6 +27,8 @@ public class Trip {
 
     private Integer lengthNight;
 
+    private String location;
+
     @OneToMany
     @JoinColumn(name = "trip_id")
     private List<PointOfInterest> interests = new ArrayList<>();
@@ -72,6 +74,14 @@ public class Trip {
 
     public void setLengthNight(Integer lengthNight) {
         this.lengthNight = lengthNight;
+    }
+
+    public String getLocation() {
+        return location;
+    }
+
+    public void setLocation(String location) {
+        this.location = location;
     }
 
     //adds up cost of every point of interest to determine budget

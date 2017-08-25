@@ -10,6 +10,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.Errors;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
@@ -40,7 +41,7 @@ public class SignUpController {
     }
 
     @RequestMapping(value="signup", method = RequestMethod.POST)
-    public String processUserSignup(Model model, String verify, @ModelAttribute @Valid User newUser, Errors errors, HttpServletRequest request, HttpServletResponse response) {
+    public String processUserSignup(Model model, String verify, @ModelAttribute @Valid User newUser, Errors errors, HttpServletResponse response) {
 
 
         if (errors.hasErrors()) {
@@ -103,6 +104,22 @@ public class SignUpController {
         model.addAttribute("title", "Recently Added Trips");
         model.addAttribute("trips", tripDao.findAll());
         return "user/logout";
+    }
+
+    @RequestMapping(value="account/{id}")
+    public String userAccount(HttpServletRequest request, Model model, @PathVariable int id) {
+        if (LogInHelper.isLoggedIn(request, userDao)) {
+            User pathUser = userDao.findOne(id);
+            User loggedInUser = LogInHelper.getLoggedInUser(userDao, request);
+            if (pathUser.equals(loggedInUser)) {
+                model.addAttribute("title", "Your Account Information");
+                model.addAttribute("user", loggedInUser);
+                return "user/acc-info";
+            } else {
+                return "redirect:/vacation/user/no-permission";
+            }
+        }
+        return "redirect:/vacation/user/login";
     }
 
     // in instances where LogInHelper.hasPermission() returns false, the user will be rerouted to this handler

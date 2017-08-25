@@ -201,12 +201,15 @@ public class TripController {
     }
 
     @RequestMapping(value="remove-item/{id}", method=RequestMethod.POST)
-    public String processRemovePointOfInterest(Model model, @RequestParam int[] pointIds) {
+    public String processRemovePointOfInterest(Model model, @RequestParam(required=false) int[] pointIds, @PathVariable int id) {
+            if (pointIds == null) {
+                return "redirect:/vacation/remove-item/{id}";
+            }
             for(int pointId : pointIds) {
                 pointOfInterestDao.delete(pointId);
             }
 
-            return "redirect:/vacation/";
+            return "redirect:/vacation/trip/{id}";
         }
 
     @RequestMapping(value="mytrips/remove", method=RequestMethod.GET)
@@ -223,12 +226,16 @@ public class TripController {
     }
 
     @RequestMapping(value="mytrips/remove", method=RequestMethod.POST)
-    public String processRemoveTrip(Model model, @RequestParam int[] tripIds) {
-        for(int tripId : tripIds) {
+    public String processRemoveTrip(Model model, @RequestParam(required=false) int[] tripIds) {
+        if (tripIds == null) {
+            return "redirect:/vacation/mytrips/remove";
+        }
+        for (int tripId : tripIds) {
             tripDao.delete(tripId);
         }
 
-        return "redirect:";
+        return "redirect:/vacation/mytrips";
+
     }
 
     @RequestMapping(value="mytrips/compare", method=RequestMethod.GET)
@@ -245,8 +252,14 @@ public class TripController {
     }
 
     @RequestMapping(value="mytrips/compare", method=RequestMethod.POST)
-    public String processCompareTrips(Model model, @RequestParam int[] tripIds) {
+    public String processCompareTrips(Model model, @RequestParam(required=false) int[] tripIds) {
         List<Trip> tripsToCompare = new ArrayList<>();
+
+        if (tripIds == null) {
+
+            return "redirect:/vacation/mytrips/compare";
+        }
+
         for (int id : tripIds) {
             tripsToCompare.add(tripDao.findOne(id));
         }
