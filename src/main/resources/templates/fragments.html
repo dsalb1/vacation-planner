@@ -14,7 +14,6 @@
     <link href="https://fonts.googleapis.com/css?family=Catamaran|Lato:400i" rel="stylesheet"/>
     <script type="text/javascript" src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
     <script type="text/javascript" src="/js/jquery.cookie.js"></script>
-    <script type="text/javascript" src="/js/login-getter.js"></script>
 
 
 </head>
@@ -27,11 +26,11 @@
             <button type="button" class="btn btn-default navbar-btn"><a href="" >Home</a></button>
             <button type="button" class="btn btn-default navbar-btn"><a href="mytrips" >My Trips</a></button>
             <button type="button" class="btn btn-default navbar-btn"><a href="mytrips/add" >New Trip</a></button>
-            <!--
-            <button type="button" class="btn btn-default navbar-btn"><a id="account" th:href="@{user/account/{id}(id=1)}">Account</a></button>
-            -->
-            <button type="button" id="login" class="btn btn-default navbar-btn"><a href="user/login">Log In</a></button>
-            <button type="button" id="logout" class="btn btn-default navbar-btn"><a href="user/logout">Log Out</a></button>
+
+            <button th:if="${session.id}" type="button" class="btn btn-default navbar-btn"><a id="account" th:href="@{user/account/{id}(id=${session.id})}">My Account</a></button>
+
+            <button th:unless="${session.id}" type="button" id="login" class="btn btn-default navbar-btn"><a href="user/login">Log In</a></button>
+            <button th:if="${session.id}" type="button" id="logout" class="btn btn-default navbar-btn"><a href="user/logout">Log Out</a></button>
         </div>
     </nav>
 

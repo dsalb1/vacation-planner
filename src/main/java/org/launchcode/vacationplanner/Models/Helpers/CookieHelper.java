@@ -1,5 +1,7 @@
 package org.launchcode.vacationplanner.Models.Helpers;
 
+import org.launchcode.vacationplanner.Models.User;
+
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -33,5 +35,18 @@ public class CookieHelper extends HttpServlet {
         public static void removeCookie(HttpServletResponse response, String name) {
             addCookie(response, name, null, 0);
         }
+
+      //sets cookies for user id and a hashed password
+        public static void setCookieSession(HttpServletResponse response, User theUser) {
+                String id = Integer.toString(theUser.getId());
+                CookieHelper.addCookie(response, "id", id, (60 * 60 * 24 * 14));
+                CookieHelper.addCookie(response, "hex", theUser.getPassword(), (60 * 60 * 24 * 14));
+            }
+
+        public static void clearCookieSession(HttpServletResponse response) {
+            addCookie(response, "id", null, 0);
+            addCookie(response, "hex", null, 0);
+        }
+
 }
 
