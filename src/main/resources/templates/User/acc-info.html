@@ -9,24 +9,51 @@
 
 
 <h1 th:text="${title}">Default Title</h1>
-<table class="table">
+<div>
+    <p>Feel free to update your email address or change your location. By adding a location to your profile, My Trip Planner can tell you exactly how far potential vacation spots are away from home!</p>
+</div>
+
+<form method="post" th:object="${user}">
+    <table class="table">
     <tr>
         <td>Username: </td>
-        <td th:text="${user.username}"></td>
+        <td th:text="*{username}"></td>
+        <input type="hidden" th:field="*{username}" />
+        <input type="hidden" th:field="*{password}"/>
     </tr>
     <tr>
         <td>Email: </td>
-        <td th:text="${user.email}"></td>
+        <td>
+            <input class="form-control" th:value="*{email}" th:field="*{email}"/>
+            <span th:errors="*{email}" class="error"></span>
+        </td>
     </tr>
     <tr>
+        <!--
+        <div class="form-group">
+            <label th:for="username">Username</label>
+            <input class="form-control" th:field="*{username}" />
+            <span th:errors="*{username}" class="error"></span>
+        </div>
+        -->
         <td>Location: </td>
-        <td th:text="${user.location}"></td>
+        <td>
+
+            <input class="form-control" th:value="*{location}" th:field="*{location}" />
+        </td>
     </tr>
     <tr>
         <td>Number of Trips: </td>
-        <td th:text="${user.trips.size()}"></td>
+        <td th:text="*{trips.size()}"></td>
+
+
+        <span th:errors="*{trips}" class="error"></span>
+
     </tr>
-</table>
+    </table>
+        <input class="submitButton" type="submit" value="Update" />
+    </form>
+
 
 
 </body>

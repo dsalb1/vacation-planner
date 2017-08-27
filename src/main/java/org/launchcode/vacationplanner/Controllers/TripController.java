@@ -128,7 +128,7 @@ public class TripController {
 
             return "trip/edit";
         }
-        //update record in the database with new input from user
+        //update fields in the database with new input from user
         editedTrip.setName(trip.getName());
         editedTrip.setDescription(trip.getDescription());
         editedTrip.setLengthNight(trip.getLengthNight());

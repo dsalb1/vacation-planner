@@ -88,6 +88,10 @@ button a:hover {
     color:purple;
 }
 
+.submitButton {
+    float:right;
+}
+
 .error {
 color:red;
 }

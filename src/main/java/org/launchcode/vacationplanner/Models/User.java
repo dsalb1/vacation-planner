@@ -42,6 +42,7 @@ public class User {
     @Column(name="EMAIL")
     private String email;
 
+    @Size(min=3)
     @Column(name="LOCATION")
     private String location;
 
@@ -97,7 +98,7 @@ public class User {
         return trips;
     }
 
-    public void setTrips(List<Trip> interests) {
+    public void setTrips(List<Trip> trips) {
         this.trips = trips;
     }
 }

@@ -20,6 +20,7 @@ import javax.validation.Valid;
 
 import static org.launchcode.vacationplanner.Models.Helpers.CookieHelper.clearCookieSession;
 import static org.launchcode.vacationplanner.Models.Helpers.CookieHelper.setCookieSession;
+import static org.launchcode.vacationplanner.Models.Helpers.LogInHelper.hasPermission;
 import static org.launchcode.vacationplanner.Models.Helpers.SessionHelper.buildSession;
 import static org.launchcode.vacationplanner.Models.Helpers.SessionHelper.clearSession;
 
@@ -112,21 +113,36 @@ public class SignUpController {
         return "user/logout";
     }
 
-    @RequestMapping(value="account/{id}")
+    @RequestMapping(value="account/{id}", method=RequestMethod.GET)
     public String userAccount
             (HttpServletRequest request, Model model, @PathVariable int id) {
-        if (LogInHelper.isLoggedIn(request, userDao)) {
-            User pathUser = userDao.findOne(id);
-            User loggedInUser = LogInHelper.getLoggedInUser(userDao, request);
-            if (pathUser.equals(loggedInUser)) {
+        if (hasPermission(request, userDao, id)) {
                 model.addAttribute("title", "Your Account Information");
-                model.addAttribute("user", loggedInUser);
+                model.addAttribute("user", userDao.findOne(id));
                 return "user/acc-info";
             } else {
                 return "redirect:/vacation/user/no-permission";
             }
+
+    }
+
+    @RequestMapping(value="account/{id}", method=RequestMethod.POST)
+    public String updateAccount(Model model, @ModelAttribute @Valid User user, Errors errors, @PathVariable int id) {
+        User editedUser = userDao.findOne(id); //find user to be edited by its id
+
+        if (errors.hasErrors()) {
+            model.addAttribute("title", "Your Account Information");
+            model.addAttribute("user", user);
+            return "user/acc-info";
         }
-        return "redirect:/vacation/user/login";
+        //update fields in the database with new input from user
+
+        editedUser.setEmail(user.getEmail());
+        editedUser.setLocation(user.getLocation());
+
+        userDao.save(editedUser);
+
+        return "redirect:/vacation/mytrips";
     }
 
     // in instances where LogInHelper.hasPermission() returns false, the user will be rerouted to this handler
