@@ -31,8 +31,8 @@ public class LogInHelper extends HttpServlet {
                 return theUser;
             }
         }
-        theUser = null;
-        return theUser;
+
+        return null;
     }
 
     public static User getLoggedInUser(UserDao userDao, HttpServletRequest request) {
@@ -42,8 +42,7 @@ public class LogInHelper extends HttpServlet {
     }
 
     public static User findUserById(UserDao userDao, Integer id) {
-        User loggedInUser = userDao.findOne(id);
-        return loggedInUser;
+        return userDao.findOne(id);
     }
 
     public static String Hash(String text) {
@@ -66,6 +65,18 @@ public class LogInHelper extends HttpServlet {
         return false;
     }
 
+    public static Boolean sessionIsLoggedIn(HttpServletRequest request, UserDao userDao) {
+        if (request.getSession().getAttribute("id") != null && request.getSession().getAttribute("hex").toString() != null) {
+            int id = Integer.parseInt(request.getSession().getAttribute("id").toString());
+            String hex = request.getSession().getAttribute("hex").toString();
+            User theUser = userDao.findOne(id);
+            if (theUser.getPassword().equals(hex)) {
+                    return true;
+                }
+            }
+        return false;
+    }
+
     /*
     after determining a user is logged in, checks the user's trips against a specific trip id to determine
     if user has permissions to edit that trip (i.e., that user OWNS that trip)
@@ -73,6 +84,21 @@ public class LogInHelper extends HttpServlet {
     public static Boolean hasPermission(HttpServletRequest request, UserDao userDao, int id) {
         if (isLoggedIn(request, userDao)) {
             Iterable<Trip> trips = getTripsByUser(userDao, request);
+            for (Trip trip : trips) {
+                if (trip.getId() == id) {
+                    return true;
+                }
+            }
+
+        }
+        return false;
+    }
+
+    public static Boolean sessionHasPermission(HttpServletRequest request, UserDao userDao, int id) {
+        if (sessionIsLoggedIn(request, userDao)) {
+            int userId = Integer.parseInt(request.getSession().getAttribute("id").toString());
+            Iterable<Trip> trips = userDao.findOne(userId).getTrips();
+
             for (Trip trip : trips) {
                 if (trip.getId() == id) {
                     return true;

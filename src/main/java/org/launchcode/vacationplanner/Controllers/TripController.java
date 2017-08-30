@@ -14,12 +14,13 @@ import org.springframework.validation.Errors;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 import java.util.ArrayList;
 import java.util.List;
 
 import static org.launchcode.vacationplanner.Models.Helpers.LogInHelper.*;
-import static org.launchcode.vacationplanner.Models.Helpers.TripHelper.getTripsByUser;
+import static org.launchcode.vacationplanner.Models.Helpers.TripHelper.sessionGetTripsByUser;
 
 /**
  * Created by Dan on 7/5/2017.
@@ -58,11 +59,13 @@ public class TripController {
 
     //restricted
     @RequestMapping(value="mytrips")
-    public String index(Model model, HttpServletRequest request) {
-        if (isLoggedIn(request, userDao)) {
-            Iterable<Trip> myTrips = getTripsByUser(userDao, request);
+    public String index(Model model, HttpSession session, HttpServletRequest request) {
+        //if (isLoggedIn(request, userDao)) {
+        if (sessionIsLoggedIn(request, userDao)) {
+            //Iterable<Trip> myTrips = getTripsByUser(userDao, request);
+            Iterable<Trip> myTrips = sessionGetTripsByUser(userDao, request);
 
-            model.addAttribute("title", "My Trips");
+            model.addAttribute("title", "Your Trips");
             model.addAttribute("trips", myTrips);
             return "trip/mytrips";
         }
@@ -72,10 +75,10 @@ public class TripController {
 
     //restricted
     @RequestMapping(value="mytrips/add", method=RequestMethod.GET)
-    public String addTripForm(Model model, HttpServletRequest request) {
+    public String addTripForm(Model model, HttpSession session, HttpServletRequest request) {
         //checks to see if user is logged in
-        if (isLoggedIn(request, userDao)) {
-
+        //if (isLoggedIn(request, userDao)) {
+        if (sessionIsLoggedIn(request, userDao)) {
             model.addAttribute("title", "Add Trip");
             model.addAttribute(new Trip());
             return "trip/add";
@@ -107,8 +110,9 @@ public class TripController {
 
     //restricted
     @RequestMapping(value="edit/{id}", method=RequestMethod.GET)
-    public String editTripForm(Model model, @PathVariable int id, HttpServletRequest request) {
-        if (hasPermission(request, userDao, id)) {
+    public String editTripForm(Model model, @PathVariable int id, HttpSession session, HttpServletRequest request) {
+        //if (hasPermission(request, userDao, id)) {
+        if (sessionHasPermission(request, userDao, id)) {
             model.addAttribute("title", "Edit Trip");
             model.addAttribute(tripDao.findOne(id));
 
@@ -140,12 +144,12 @@ public class TripController {
 
     //check for restriction
     @RequestMapping(value="trip/{id}")
-    public String tripView(Model model, HttpServletRequest request, @PathVariable int id) {
+    public String tripView(Model model, HttpSession session, HttpServletRequest request, @PathVariable int id) {
 
         model.addAttribute("trip", tripDao.findOne(id));
 
-        if (hasPermission(request, userDao, id)) {
-
+        //if (hasPermission(request, userDao, id)) {
+        if (sessionHasPermission(request, userDao, id)) {
             return "trip/view-logged-in";
         }
 
@@ -156,8 +160,9 @@ public class TripController {
 
     //restricted
     @RequestMapping(value="add-item/{id}", method=RequestMethod.GET)
-    public String addPointOfInterest(Model model, @PathVariable int id, HttpServletRequest request) {
-        if (hasPermission(request, userDao, id)) {
+    public String addPointOfInterest(Model model, @PathVariable int id, HttpSession session, HttpServletRequest request) {
+        //if (hasPermission(request, userDao, id)) {
+        if (sessionHasPermission(request, userDao, id)) {
             model.addAttribute("title", "Add an Activity");
             model.addAttribute("point", new PointOfInterest());
             model.addAttribute("trip", tripDao.findOne(id));
@@ -190,8 +195,9 @@ public class TripController {
     }
 
     @RequestMapping(value="remove-item/{id}", method=RequestMethod.GET)
-    public String removePointOfInterest(Model model, HttpServletRequest request, @PathVariable int id) {
-        if (hasPermission(request, userDao, id)) {
+    public String removePointOfInterest(Model model, HttpSession session, HttpServletRequest request, @PathVariable int id) {
+        //if (hasPermission(request, userDao, id)) {
+        if (sessionHasPermission(request, userDao, id)) {
             model.addAttribute("title", "Remove activities");
             model.addAttribute("trip", tripDao.findOne(id));
 
@@ -213,10 +219,11 @@ public class TripController {
         }
 
     @RequestMapping(value="mytrips/remove", method=RequestMethod.GET)
-    public String removeTrip(Model model, HttpServletRequest request) {
-        if (isLoggedIn(request, userDao)) {
-            Iterable<Trip> myTrips = getTripsByUser(userDao, request);
-
+    public String removeTrip(Model model, HttpSession session, HttpServletRequest request) {
+        //if (isLoggedIn(request, userDao)) {
+        if (sessionIsLoggedIn(request, userDao)) {
+            //Iterable<Trip> myTrips = getTripsByUser(userDao, request);
+            Iterable<Trip> myTrips = sessionGetTripsByUser(userDao, request);
             model.addAttribute("title", "Remove Trips");
             model.addAttribute("trips", myTrips);
             return "trip/remove-trip";
@@ -239,10 +246,11 @@ public class TripController {
     }
 
     @RequestMapping(value="mytrips/compare", method=RequestMethod.GET)
-    public String compareTrips(Model model, HttpServletRequest request) {
-        if (isLoggedIn(request, userDao)) {
-            Iterable<Trip> myTrips = getTripsByUser(userDao, request);
-
+    public String compareTrips(Model model, HttpSession session, HttpServletRequest request) {
+        //if (isLoggedIn(request, userDao)) {
+        if (sessionIsLoggedIn(request, userDao)) {
+            //Iterable<Trip> myTrips = getTripsByUser(userDao, request);
+            Iterable<Trip> myTrips = sessionGetTripsByUser(userDao, request);
             model.addAttribute("title", "Select Two Trips To Compare");
             model.addAttribute("trips", myTrips);
             return "trip/compare-index";

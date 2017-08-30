@@ -19,8 +19,7 @@ import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 
 import static org.launchcode.vacationplanner.Models.Helpers.CookieHelper.clearCookieSession;
-import static org.launchcode.vacationplanner.Models.Helpers.CookieHelper.setCookieSession;
-import static org.launchcode.vacationplanner.Models.Helpers.LogInHelper.hasPermission;
+import static org.launchcode.vacationplanner.Models.Helpers.LogInHelper.sessionHasPermission;
 import static org.launchcode.vacationplanner.Models.Helpers.SessionHelper.buildSession;
 import static org.launchcode.vacationplanner.Models.Helpers.SessionHelper.clearSession;
 
@@ -66,7 +65,7 @@ public class SignUpController {
             newUser.setPassword(hex);
             userDao.save(newUser);
 
-            setCookieSession(response, newUser);
+            //setCookieSession(response, newUser);
             buildSession(session, newUser);
 
             return "redirect:/vacation/";
@@ -93,7 +92,8 @@ public class SignUpController {
             (HttpServletResponse response, HttpSession session, Model model, String username, String password) {
         User theUser = LogInHelper.findUserByCredentials(userDao, username, password);
         if(theUser != null) {
-            setCookieSession(response, theUser);
+            //setCookieSession(response, theUser);
+            //builds a server-side session with user credentials
             buildSession(session, theUser);
 
             return "redirect:/vacation/mytrips";
@@ -115,8 +115,8 @@ public class SignUpController {
 
     @RequestMapping(value="account/{id}", method=RequestMethod.GET)
     public String userAccount
-            (HttpServletRequest request, Model model, @PathVariable int id) {
-        if (hasPermission(request, userDao, id)) {
+            (HttpSession session, HttpServletRequest request, Model model, @PathVariable int id) {
+        if (sessionHasPermission(request, userDao, id)) {
                 model.addAttribute("title", "Your Account Information");
                 model.addAttribute("user", userDao.findOne(id));
                 return "user/acc-info";

@@ -17,5 +17,10 @@ public class TripHelper {
         return loggedInUser.getTrips();
     }
 
+    public static Iterable<Trip> sessionGetTripsByUser(UserDao userDao, HttpServletRequest request) {
+        int id = Integer.parseInt(request.getSession().getAttribute("id").toString());
+        return userDao.findOne(id).getTrips();
+
+    }
 
 }
