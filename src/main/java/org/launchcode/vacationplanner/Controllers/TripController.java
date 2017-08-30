@@ -1,9 +1,9 @@
 package org.launchcode.vacationplanner.Controllers;
 
+import org.launchcode.vacationplanner.ErrorHandlers.PageDoesNotExistException;
 import org.launchcode.vacationplanner.Models.Data.PointOfInterestDao;
 import org.launchcode.vacationplanner.Models.Data.TripDao;
 import org.launchcode.vacationplanner.Models.Data.UserDao;
-import org.launchcode.vacationplanner.Models.Helpers.CookieHelper;
 import org.launchcode.vacationplanner.Models.PointOfInterest;
 import org.launchcode.vacationplanner.Models.Trip;
 import org.launchcode.vacationplanner.Models.User;
@@ -39,16 +39,6 @@ public class TripController {
     @Autowired
     private PointOfInterestDao pointOfInterestDao;
 
-    /*
-    @RequestMapping(value="")
-    public String index(Model model) {
-        model.addAttribute("title", "Recently Added Trips");
-        model.addAttribute("trips", tripDao.findAll());
-        model.addAttribute("index");
-        return "trip/index";
-    }
-    */
-
     @RequestMapping(value="")
     public String index(Model model) {
         model.addAttribute("title", "Ready To Plan Your Next Adventure?");
@@ -60,9 +50,7 @@ public class TripController {
     //restricted
     @RequestMapping(value="mytrips")
     public String index(Model model, HttpSession session, HttpServletRequest request) {
-        //if (isLoggedIn(request, userDao)) {
         if (sessionIsLoggedIn(request, userDao)) {
-            //Iterable<Trip> myTrips = getTripsByUser(userDao, request);
             Iterable<Trip> myTrips = sessionGetTripsByUser(userDao, request);
 
             model.addAttribute("title", "Your Trips");
@@ -77,7 +65,6 @@ public class TripController {
     @RequestMapping(value="mytrips/add", method=RequestMethod.GET)
     public String addTripForm(Model model, HttpSession session, HttpServletRequest request) {
         //checks to see if user is logged in
-        //if (isLoggedIn(request, userDao)) {
         if (sessionIsLoggedIn(request, userDao)) {
             model.addAttribute("title", "Add Trip");
             model.addAttribute(new Trip());
@@ -90,7 +77,6 @@ public class TripController {
 
     @RequestMapping(value="mytrips/add", method=RequestMethod.POST)
     public String processAddTripForm(Model model, @ModelAttribute @Valid Trip newTrip, Errors errors, HttpServletRequest request) {
-
         if (errors.hasErrors()) {
             model.addAttribute("title", "Add Trip");
             model.addAttribute("trip", newTrip);
@@ -99,8 +85,8 @@ public class TripController {
         }
 
         //Find user by id and set User field in the new trip object;
-        Integer id = Integer.parseInt(CookieHelper.getCookieValue(request, "id"));
-        User loggedInUser = findUserById(userDao, id);
+        int id = Integer.parseInt(request.getSession().getAttribute("id").toString());
+        User loggedInUser = userDao.findOne(id);
         newTrip.setUser(loggedInUser);
 
         tripDao.save(newTrip);
@@ -110,8 +96,7 @@ public class TripController {
 
     //restricted
     @RequestMapping(value="edit/{id}", method=RequestMethod.GET)
-    public String editTripForm(Model model, @PathVariable int id, HttpSession session, HttpServletRequest request) {
-        //if (hasPermission(request, userDao, id)) {
+    public String editTripForm(Model model, @PathVariable int id, HttpServletRequest request) {
         if (sessionHasPermission(request, userDao, id)) {
             model.addAttribute("title", "Edit Trip");
             model.addAttribute(tripDao.findOne(id));
@@ -144,11 +129,11 @@ public class TripController {
 
     //check for restriction
     @RequestMapping(value="trip/{id}")
-    public String tripView(Model model, HttpSession session, HttpServletRequest request, @PathVariable int id) {
+    public String tripView(Model model, HttpServletRequest request, @PathVariable int id) {
+        Trip trip = tripDao.findOne(id);
+        if (trip == null) throw new PageDoesNotExistException();
 
-        model.addAttribute("trip", tripDao.findOne(id));
-
-        //if (hasPermission(request, userDao, id)) {
+        model.addAttribute("trip", trip);
         if (sessionHasPermission(request, userDao, id)) {
             return "trip/view-logged-in";
         }
@@ -160,8 +145,7 @@ public class TripController {
 
     //restricted
     @RequestMapping(value="add-item/{id}", method=RequestMethod.GET)
-    public String addPointOfInterest(Model model, @PathVariable int id, HttpSession session, HttpServletRequest request) {
-        //if (hasPermission(request, userDao, id)) {
+    public String addPointOfInterest(Model model, @PathVariable int id, HttpServletRequest request) {
         if (sessionHasPermission(request, userDao, id)) {
             model.addAttribute("title", "Add an Activity");
             model.addAttribute("point", new PointOfInterest());
@@ -195,8 +179,7 @@ public class TripController {
     }
 
     @RequestMapping(value="remove-item/{id}", method=RequestMethod.GET)
-    public String removePointOfInterest(Model model, HttpSession session, HttpServletRequest request, @PathVariable int id) {
-        //if (hasPermission(request, userDao, id)) {
+    public String removePointOfInterest(Model model, HttpServletRequest request, @PathVariable int id) {
         if (sessionHasPermission(request, userDao, id)) {
             model.addAttribute("title", "Remove activities");
             model.addAttribute("trip", tripDao.findOne(id));
@@ -208,9 +191,11 @@ public class TripController {
 
     @RequestMapping(value="remove-item/{id}", method=RequestMethod.POST)
     public String processRemovePointOfInterest(Model model, @RequestParam(required=false) int[] pointIds, @PathVariable int id) {
+
             if (pointIds == null) {
                 return "redirect:/vacation/remove-item/{id}";
             }
+
             for(int pointId : pointIds) {
                 pointOfInterestDao.delete(pointId);
             }
@@ -220,9 +205,8 @@ public class TripController {
 
     @RequestMapping(value="mytrips/remove", method=RequestMethod.GET)
     public String removeTrip(Model model, HttpSession session, HttpServletRequest request) {
-        //if (isLoggedIn(request, userDao)) {
+
         if (sessionIsLoggedIn(request, userDao)) {
-            //Iterable<Trip> myTrips = getTripsByUser(userDao, request);
             Iterable<Trip> myTrips = sessionGetTripsByUser(userDao, request);
             model.addAttribute("title", "Remove Trips");
             model.addAttribute("trips", myTrips);
@@ -245,11 +229,11 @@ public class TripController {
 
     }
 
+    //restricted
     @RequestMapping(value="mytrips/compare", method=RequestMethod.GET)
-    public String compareTrips(Model model, HttpSession session, HttpServletRequest request) {
-        //if (isLoggedIn(request, userDao)) {
+    public String compareTrips(Model model, HttpServletRequest request) {
+
         if (sessionIsLoggedIn(request, userDao)) {
-            //Iterable<Trip> myTrips = getTripsByUser(userDao, request);
             Iterable<Trip> myTrips = sessionGetTripsByUser(userDao, request);
             model.addAttribute("title", "Select Two Trips To Compare");
             model.addAttribute("trips", myTrips);
@@ -276,4 +260,8 @@ public class TripController {
         return "trip/view-compare";
     }
 
+    @ExceptionHandler(PageDoesNotExistException.class)
+    public String paramError() {
+        return "Errors/missing-param";
+    }
 }

@@ -49,7 +49,7 @@ public class SignUpController {
     @RequestMapping(value="signup", method = RequestMethod.POST)
     public String processUserSignup
             (Model model, String verify, @ModelAttribute @Valid User newUser,
-             Errors errors, HttpServletResponse response, HttpSession session) {
+             Errors errors, HttpSession session) {
 
 
         if (errors.hasErrors()) {
@@ -65,7 +65,7 @@ public class SignUpController {
             newUser.setPassword(hex);
             userDao.save(newUser);
 
-            //setCookieSession(response, newUser);
+            //adds user id and hashed password to session
             buildSession(session, newUser);
 
             return "redirect:/vacation/";
@@ -89,10 +89,9 @@ public class SignUpController {
 
     @RequestMapping(value="login", method=RequestMethod.POST)
     public String processUserLogIn
-            (HttpServletResponse response, HttpSession session, Model model, String username, String password) {
+            (HttpSession session, Model model, String username, String password) {
         User theUser = LogInHelper.findUserByCredentials(userDao, username, password);
         if(theUser != null) {
-            //setCookieSession(response, theUser);
             //builds a server-side session with user credentials
             buildSession(session, theUser);
 
