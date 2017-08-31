@@ -1,9 +1,13 @@
 package org.launchcode.vacationplanner.Models;
 
 
+import com.google.maps.errors.ApiException;
+import org.launchcode.vacationplanner.Models.Helpers.getDistanceMatrix;
+
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -28,6 +32,8 @@ public class Trip {
     private Integer lengthNight;
 
     private String location;
+
+    private String distance;
 
     @OneToMany
     @JoinColumn(name = "trip_id")
@@ -111,6 +117,25 @@ public class Trip {
 
     public void setUser(User user) {
         this.user = user;
+    }
+
+    public void setDistance() throws InterruptedException, ApiException, IOException {
+        String userLoc = this.getUser().getLocation();
+        String tripLoc = this.getLocation();
+        if (tripLoc != null && userLoc != null) {
+            getDistanceMatrix distMiles = new getDistanceMatrix(this.getUser().getLocation(), getLocation());
+            this.distance = distMiles.getDistanceMiles();
+
+        }
+    }
+
+    public String getDistance() throws InterruptedException, ApiException, IOException {
+        this.setDistance();
+        if (this.distance != null) {
+            return this.distance;
+        } else {
+            return null;
+        }
     }
 }
 

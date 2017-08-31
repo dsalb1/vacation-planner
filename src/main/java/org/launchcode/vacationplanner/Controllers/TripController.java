@@ -1,5 +1,6 @@
 package org.launchcode.vacationplanner.Controllers;
 
+import com.google.maps.errors.ApiException;
 import org.launchcode.vacationplanner.ErrorHandlers.PageDoesNotExistException;
 import org.launchcode.vacationplanner.Models.Data.PointOfInterestDao;
 import org.launchcode.vacationplanner.Models.Data.TripDao;
@@ -16,10 +17,12 @@ import org.springframework.web.bind.annotation.*;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.launchcode.vacationplanner.Models.Helpers.LogInHelper.*;
+import static org.launchcode.vacationplanner.Models.Helpers.LogInHelper.sessionHasPermission;
+import static org.launchcode.vacationplanner.Models.Helpers.LogInHelper.sessionIsLoggedIn;
 import static org.launchcode.vacationplanner.Models.Helpers.TripHelper.sessionGetTripsByUser;
 
 /**
@@ -121,6 +124,7 @@ public class TripController {
         editedTrip.setName(trip.getName());
         editedTrip.setDescription(trip.getDescription());
         editedTrip.setLengthNight(trip.getLengthNight());
+        editedTrip.setLocation(trip.getLocation());
 
         tripDao.save(editedTrip);
 
@@ -129,7 +133,7 @@ public class TripController {
 
     //check for restriction
     @RequestMapping(value="trip/{id}")
-    public String tripView(Model model, HttpServletRequest request, @PathVariable int id) {
+    public String tripView(Model model, HttpServletRequest request, @PathVariable int id) throws InterruptedException, ApiException, IOException {
         Trip trip = tripDao.findOne(id);
         if (trip == null) throw new PageDoesNotExistException();
 
@@ -264,4 +268,6 @@ public class TripController {
     public String paramError() {
         return "Errors/missing-param";
     }
+
+
 }

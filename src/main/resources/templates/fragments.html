@@ -46,6 +46,10 @@
         <h3 class="col-sm-4" th:text="${trip.description}"></h3>
         <h3 class="col-sm-4" th:text="${trip.getBudget()}"></h3>
     </div>
+    <div class="row">
+        <h3 class="col-sm-4" th:text="${trip.location}"></h3>
+        <h3 class="col-sm-4" th:text="${trip.distance}"></h3>
+    </div>
 </div>
 
 <!-- activities -->
@@ -75,15 +79,17 @@
         <tr>
             <th>Name</th>
             <th>Description</th>
-            <th>Budget</th>
+            <th>Distance from home</th>
             <th>Number of Nights</th>
+            <th>Budget</th>
             <th></th>
         </tr>
         <tr th:each="trip : ${trips}">
             <td><a  th:text="${trip.name}" th:href="@{trip/{id}(id=${trip.id})}"></a></td>
             <td th:text="${trip.description}"></td>
-            <td th:text="${trip.getBudget()}"></td>
+            <td th:text="${trip.distance}"></td>
             <td th:text="${trip.lengthNight}"></td>
+            <td th:text="${trip.getBudget()}"></td>
             <td><a th:href="@{edit/{id}(id=${trip.id})}" >Edit</a></td>
         </tr>
     </table>

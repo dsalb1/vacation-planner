@@ -30,6 +30,7 @@ dependencies {
 	compile('org.springframework.boot:spring-boot-starter-thymeleaf')
 	compile('org.springframework.boot:spring-boot-starter-web')
 	compile('org.springframework.boot:spring-boot-starter-data-jpa')
+	compile('com.google.maps:google-maps-services:0.2.2')
 	compile('mysql:mysql-connector-java:5.1.31')
 	compile('commons-codec:commons-codec:1.10')
 	runtime('org.springframework.boot:spring-boot-devtools')
