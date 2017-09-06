@@ -20,7 +20,7 @@ public class getDistanceMatrix {
     public String getDistanceMiles() throws InterruptedException, ApiException, IOException {
         try {
             GeoApiContext context = new GeoApiContext.Builder()
-                    .apiKey("AIzaSyAFo5H842Zi8XF6W9ETugcpo4eU2WfmfCA")
+                    .apiKey(new GoogleMapsApiKey().getKey()) // gets api key from helper class
                     .build();
             DistanceMatrix distanceMatrix = DistanceMatrixApi.getDistanceMatrix(context, this.origin, this.destination).await();
             return (distanceMatrix.rows[0].elements[0].distance).toString();
@@ -29,22 +29,6 @@ public class getDistanceMatrix {
         }
     }
 
-    public String[] getOrigin() {
-        return origin;
-    }
-
-    public void setOrigin(String[] origin) {
-        System.arraycopy(origin, 0, this.origin, 0, origin.length);
-    }
-
-    public String[] getDestination() {
-        return destination;
-    }
-
-    public void setDestination(String[] destination) {
-        System.arraycopy(destination, 0, this.destination, 0, destination.length);
-
-    }
 }
 
 

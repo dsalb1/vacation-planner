@@ -131,7 +131,7 @@ public class SignUpController {
 
         if (errors.hasErrors()) {
             model.addAttribute("title", "Your Account Information");
-            model.addAttribute("user", user);
+            model.addAttribute("user", editedUser);
             return "user/acc-info";
         }
         //update fields in the database with new input from user

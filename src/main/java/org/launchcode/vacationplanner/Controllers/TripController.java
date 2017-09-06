@@ -5,6 +5,7 @@ import org.launchcode.vacationplanner.ErrorHandlers.PageDoesNotExistException;
 import org.launchcode.vacationplanner.Models.Data.PointOfInterestDao;
 import org.launchcode.vacationplanner.Models.Data.TripDao;
 import org.launchcode.vacationplanner.Models.Data.UserDao;
+import org.launchcode.vacationplanner.Models.Helpers.TripGetter;
 import org.launchcode.vacationplanner.Models.PointOfInterest;
 import org.launchcode.vacationplanner.Models.Trip;
 import org.launchcode.vacationplanner.Models.User;
@@ -23,7 +24,6 @@ import java.util.List;
 
 import static org.launchcode.vacationplanner.Models.Helpers.LogInHelper.sessionHasPermission;
 import static org.launchcode.vacationplanner.Models.Helpers.LogInHelper.sessionIsLoggedIn;
-import static org.launchcode.vacationplanner.Models.Helpers.TripHelper.sessionGetTripsByUser;
 
 /**
  * Created by Dan on 7/5/2017.
@@ -54,7 +54,7 @@ public class TripController {
     @RequestMapping(value="mytrips")
     public String index(Model model, HttpSession session, HttpServletRequest request) {
         if (sessionIsLoggedIn(request, userDao)) {
-            Iterable<Trip> myTrips = sessionGetTripsByUser(userDao, request);
+            Iterable<Trip> myTrips = new TripGetter().getBySession(userDao, request);
 
             model.addAttribute("title", "Your Trips");
             model.addAttribute("trips", myTrips);
@@ -211,7 +211,7 @@ public class TripController {
     public String removeTrip(Model model, HttpSession session, HttpServletRequest request) {
 
         if (sessionIsLoggedIn(request, userDao)) {
-            Iterable<Trip> myTrips = sessionGetTripsByUser(userDao, request);
+            Iterable<Trip> myTrips = new TripGetter().getBySession(userDao, request);
             model.addAttribute("title", "Remove Trips");
             model.addAttribute("trips", myTrips);
             return "trip/remove-trip";
@@ -238,7 +238,7 @@ public class TripController {
     public String compareTrips(Model model, HttpServletRequest request) {
 
         if (sessionIsLoggedIn(request, userDao)) {
-            Iterable<Trip> myTrips = sessionGetTripsByUser(userDao, request);
+            Iterable<Trip> myTrips = new TripGetter().getBySession(userDao, request);
             model.addAttribute("title", "Select Two Trips To Compare");
             model.addAttribute("trips", myTrips);
             return "trip/compare-index";

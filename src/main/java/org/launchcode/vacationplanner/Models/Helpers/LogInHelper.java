@@ -9,7 +9,6 @@ import javax.servlet.http.HttpServletRequest;
 
 import static org.apache.commons.codec.digest.DigestUtils.sha256Hex;
 import static org.launchcode.vacationplanner.Models.Helpers.CookieHelper.getCookieValue;
-import static org.launchcode.vacationplanner.Models.Helpers.TripHelper.getTripsByUser;
 
 /**
  * Created by Dan on 7/13/2017.
@@ -83,7 +82,7 @@ public class LogInHelper extends HttpServlet {
     */
     public static Boolean hasPermission(HttpServletRequest request, UserDao userDao, int id) {
         if (isLoggedIn(request, userDao)) {
-            Iterable<Trip> trips = getTripsByUser(userDao, request);
+            Iterable<Trip> trips = new TripGetter().getBySession(userDao, request);
             for (Trip trip : trips) {
                 if (trip.getId() == id) {
                     return true;
